@@ -1,8 +1,6 @@
 import SwiftUI
 
-/**
- A property wrapper that can be used to abstract the state and binding properties.
- */
+/// A property wrapper that can be used to abstract the state and binding properties.
 @propertyWrapper
 public struct AbstractState<Value>: DynamicProperty {
   
@@ -55,20 +53,13 @@ public struct AbstractState<Value>: DynamicProperty {
 
 #if DEBUG
 
-private struct Book: View {
-  
-  @AbstractState var count: Int = 1
-  
-  var body: some View {
-    Button("Up \(count)") {
-      count += 1
-    }
-  }
-}
-
-private struct BookBinding: View {
+private struct Counter: View {
   
   @AbstractState var count: Int
+  
+  init(initialValue: Int) {
+    _count = AbstractState(initialValue)
+  }
   
   init(binding: Binding<Int>) {
     _count = AbstractState(binding)
@@ -79,25 +70,25 @@ private struct BookBinding: View {
       count += 1
     }
   }
-}
-
-private struct BookBindingWrapper: View {
-  
-  @State private var count: Int = 1
-  
-  var body: some View {
-    BookBinding(binding: $count)
-  }
   
 }
 
 #Preview("State") {
-  Book()  
+  Counter(initialValue: 1)
 }
 
-#Preview("Binding") {
-  BookBindingWrapper()
+struct Wrapper: View {
+  
+  @State private var count: Int = 1
+  
+  var body: some View {
+    Counter(binding: $count)
+  }
+  
+}
+
+#Preview("Binding") {  
+  Wrapper()
 }
 
 #endif
-
